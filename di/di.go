@@ -12,7 +12,6 @@ import (
 
 	"github.com/project-inari/core-business-member/config"
 	"github.com/project-inari/core-business-member/handler"
-	"github.com/project-inari/core-business-member/pkg/httpclient"
 	"github.com/project-inari/core-business-member/repository"
 	"github.com/project-inari/core-business-member/service"
 )
@@ -35,15 +34,6 @@ func New(c *config.Config) {
 	// Echo server initialization
 	e := echo.New()
 	setupServer(ctx, e, c)
-
-	// HTTP Client initialization
-	httpClientWiremock := httpclient.NewHTTPClient(httpclient.Options{
-		MaxConns:                 c.WiremockAPIConfig.MaxConns,
-		MaxRetry:                 c.WiremockAPIConfig.MaxRetry,
-		Timeout:                  c.WiremockAPIConfig.Timeout,
-		InsecureSkipVerify:       c.WiremockAPIConfig.InsecureSkipVerify,
-		MaxTransactionsPerSecond: c.WiremockAPIConfig.MaxTransactionsPerSecond,
-	})
 
 	// MySQL initialization
 	mysqlDB, err := newMySQL(mySQLOptions{
@@ -72,6 +62,7 @@ func New(c *config.Config) {
 		timeout:  c.RedisConfig.Timeout,
 		maxRetry: c.RedisConfig.MaxRetry,
 		poolSize: c.RedisConfig.PoolSize,
+		db:       c.RedisConfig.DB,
 	})
 	if err != nil {
 		log.Panicf("error - [main.New] unable to connect to Redis: %v", err)
@@ -83,15 +74,6 @@ func New(c *config.Config) {
 	}()
 
 	// Repository initialization
-	exampleRepo := repository.NewExampleRepository(repository.ExampleRepositoryConfig{})
-
-	wiremockAPIRepo := repository.NewWiremockAPIRepository(repository.WiremockAPIRepositoryConfig{
-		BaseURL: c.WiremockAPIConfig.BaseURL,
-		Path:    c.WiremockAPIConfig.Path,
-	}, repository.WiremockAPIRepositoryDependencies{
-		Client: httpClientWiremock,
-	})
-
 	databaseRepo := repository.NewDatabaseRepository(repository.DatabaseRepositoryConfig{
 		Database: c.MySQLConfig.Database,
 	}, repository.DatabaseRepositoryDependencies{
@@ -104,10 +86,8 @@ func New(c *config.Config) {
 
 	// Service initialization
 	service := service.New(service.Dependencies{
-		ExampleRepository:     exampleRepo,
-		WiremockAPIRepository: wiremockAPIRepo,
-		DatabaseRepository:    databaseRepo,
-		CacheRepository:       cacheRepo,
+		DatabaseRepository: databaseRepo,
+		CacheRepository:    cacheRepo,
 	})
 
 	// Handler initialization
