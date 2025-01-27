@@ -14,6 +14,7 @@ type Port interface {
 	AcceptInvite(ctx context.Context, req dto.AcceptInviteReq) (*dto.AcceptInviteRes, error)
 	DeclineInvite(ctx context.Context, req dto.DeclineInviteReq) (*dto.DeclineInviteRes, error)
 	JoiningInquiry(ctx context.Context, req dto.JoiningInquiryReq) (*dto.JoiningInquiryRes, error)
+	MemberInquiry(ctx context.Context, businessName string) (*dto.MemberInquiryRes, error)
 }
 
 type service struct {

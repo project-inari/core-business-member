@@ -131,3 +131,24 @@ func (r *databaseRepository) GetBusinessJoiningStatus(ctx context.Context, filte
 
 	return entities, nil
 }
+
+// GetBusinessMembers retrieves the business members of a business
+func (r *databaseRepository) GetBusinessMembers(ctx context.Context, businessName string) ([]*dto.BusinessMemberEntity, error) {
+	rows, err := r.client.QueryContext(ctx, "SELECT id, business_name, username, role, created_at, updated_at FROM tbl_business_members WHERE business_name = ?", businessName)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close() // nolint: errcheck
+
+	var entities []*dto.BusinessMemberEntity
+	for rows.Next() {
+		var entity dto.BusinessMemberEntity
+		if err := rows.Scan(&entity.ID, &entity.BusinessName, &entity.Username, &entity.Role, &entity.CreatedAt, &entity.UpdatedAt); err != nil {
+			return nil, err
+		}
+
+		entities = append(entities, &entity)
+	}
+
+	return entities, nil
+}

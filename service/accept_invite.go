@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 
 	"github.com/project-inari/core-business-member/dto"
 	"github.com/project-inari/core-business-member/pkg/utils"
@@ -14,6 +15,19 @@ const (
 
 // AcceptInvite accepts a business invitation
 func (s *service) AcceptInvite(ctx context.Context, req dto.AcceptInviteReq) (*dto.AcceptInviteRes, error) {
+	inviteStatus, err := s.databaseRepository.GetBusinessJoiningStatus(ctx, dto.BusinessJoiningQueryFilter{
+		BusinessName: req.BusinessName,
+		Username:     req.InviteeUsername,
+		Status:       statusInvitePending,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if len(inviteStatus) == 0 {
+		return nil, errors.New("no pending invitation found")
+	}
+
 	if err := s.databaseRepository.AcceptBusinessInvitation(ctx, req.InviteeUsername, req.BusinessName); err != nil {
 		return nil, err
 	}

@@ -9,7 +9,7 @@ Content-Type: application/json
 POST http://localhost:8080/v1/invite/accept
 Content-Type: application/json
 {
-    "inviteeUsername": "user2",
+    "inviteeUsername": "user3",
     "businessName": "business1"
 }
 
@@ -24,3 +24,5 @@ GET http://localhost:8080/v1/joining
     ?username=user2
     &businessName=business1
     &status=INVITE_ACCEPTED
+
+GET http://localhost:8080/v1/members/business1

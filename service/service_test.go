@@ -14,6 +14,7 @@ import (
 type mockDatabaseRepository struct {
 	getBusinessRes              *dto.BusinessEntity
 	getBusinessJoiningStatusRes []*dto.BusinessJoiningEntity
+	getBusinessMembersRes       []*dto.BusinessMemberEntity
 	err                         error
 }
 
@@ -35,6 +36,10 @@ func (m *mockDatabaseRepository) DeclineBusinessInvitation(_ context.Context, _,
 
 func (m *mockDatabaseRepository) GetBusinessJoiningStatus(_ context.Context, _ dto.BusinessJoiningQueryFilter) ([]*dto.BusinessJoiningEntity, error) {
 	return m.getBusinessJoiningStatusRes, m.err
+}
+
+func (m *mockDatabaseRepository) GetBusinessMembers(_ context.Context, _ string) ([]*dto.BusinessMemberEntity, error) {
+	return m.getBusinessMembersRes, m.err
 }
 
 type mockCacheRepository struct {
@@ -126,11 +131,19 @@ func TestAcceptInvite(t *testing.T) {
 	}
 
 	t.Run("success", func(t *testing.T) {
-
 		mockCacheRepository := &mockCacheRepository{}
 		mockDatabaseRepository := &mockDatabaseRepository{
 			getBusinessRes: &dto.BusinessEntity{},
-			err:            nil,
+			getBusinessJoiningStatusRes: []*dto.BusinessJoiningEntity{
+				{
+					ID:           1,
+					Username:     mockInviteeUsername,
+					BusinessName: mockBusinessName,
+					Status:       statusInvitePending,
+					ActionedBy:   mockInviterUsername,
+				},
+			},
+			err: nil,
 		}
 
 		s := New(Dependencies{
