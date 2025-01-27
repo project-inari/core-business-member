@@ -28,6 +28,10 @@ func (m *mockDatabaseRepository) GetBusiness(_ context.Context, _ string) (*dto.
 	return m.getBusinessRes, m.err
 }
 
+func (m *mockDatabaseRepository) DeclineBusinessInvitation(_ context.Context, _, _ string) error {
+	return m.err
+}
+
 type mockCacheRepository struct {
 	getRes *redis.StringCmd
 	setRes *redis.StatusCmd
@@ -166,6 +170,54 @@ func TestAcceptInvite(t *testing.T) {
 		})
 
 		_, err := s.AcceptInvite(ctx, req)
+
+		assert.Error(t, err)
+	})
+}
+
+func TestDeclineInvite(t *testing.T) {
+	ctx := context.Background()
+
+	req := dto.DeclineInviteReq{
+		InviteeUsername: mockInviteeUsername,
+		BusinessName:    mockBusinessName,
+	}
+
+	expectedRes := &dto.DeclineInviteRes{
+		InviteeUsername: mockInviteeUsername,
+		BusinessName:    mockBusinessName,
+		Status:          statusInviteDeclined,
+	}
+
+	t.Run("success", func(t *testing.T) {
+		mockCacheRepository := &mockCacheRepository{}
+		mockDatabaseRepository := &mockDatabaseRepository{
+			err: nil,
+		}
+
+		s := New(Dependencies{
+			DatabaseRepository: mockDatabaseRepository,
+			CacheRepository:    mockCacheRepository,
+		})
+
+		res, err := s.DeclineInvite(ctx, req)
+
+		assert.NoError(t, err)
+		assert.Equal(t, expectedRes, res)
+	})
+
+	t.Run("error - when database repo returned error", func(t *testing.T) {
+		mockCacheRepository := &mockCacheRepository{}
+		mockDatabaseRepository := &mockDatabaseRepository{
+			err: errors.New("error"),
+		}
+
+		s := New(Dependencies{
+			DatabaseRepository: mockDatabaseRepository,
+			CacheRepository:    mockCacheRepository,
+		})
+
+		_, err := s.DeclineInvite(ctx, req)
 
 		assert.Error(t, err)
 	})

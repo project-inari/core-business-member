@@ -37,8 +37,7 @@ CREATE TABLE `business`.`tbl_business_joinings` (
   `actioned_by` varchar(20) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`business_name`,`username`),
-  UNIQUE KEY `id` (`id`),
+  PRIMARY KEY (`id`),
   KEY `tbl_business_joinings_business_name_IDX` (`business_name`) USING BTREE,
   KEY `tbl_business_joinings_username_IDX` (`username`) USING BTREE,
   CONSTRAINT `tbl_business_joinings_ibfk_1` FOREIGN KEY (`business_name`) REFERENCES `tbl_businesses` (`name`)
