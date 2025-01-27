@@ -12,8 +12,9 @@ import (
 )
 
 type mockDatabaseRepository struct {
-	getBusinessRes *dto.BusinessEntity
-	err            error
+	getBusinessRes              *dto.BusinessEntity
+	getBusinessJoiningStatusRes []*dto.BusinessJoiningEntity
+	err                         error
 }
 
 func (m *mockDatabaseRepository) InviteToJoinBusiness(_ context.Context, _, _, _ string) error {
@@ -30,6 +31,10 @@ func (m *mockDatabaseRepository) GetBusiness(_ context.Context, _ string) (*dto.
 
 func (m *mockDatabaseRepository) DeclineBusinessInvitation(_ context.Context, _, _ string) error {
 	return m.err
+}
+
+func (m *mockDatabaseRepository) GetBusinessJoiningStatus(_ context.Context, _ dto.BusinessJoiningQueryFilter) ([]*dto.BusinessJoiningEntity, error) {
+	return m.getBusinessJoiningStatusRes, m.err
 }
 
 type mockCacheRepository struct {

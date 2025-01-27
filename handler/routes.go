@@ -11,4 +11,5 @@ func (h *httpHandler) initRoutes(e *echo.Echo) {
 	v1.POST("/invite", h.Invite)
 	v1.POST("/invite/accept", h.AcceptInvite)
 	v1.POST("/invite/decline", h.DeclineInvite)
+	v1.GET("/joining", h.JoiningInquiry)
 }
