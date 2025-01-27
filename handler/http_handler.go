@@ -53,3 +53,20 @@ func (h *httpHandler) AcceptInvite(c echo.Context) error {
 
 	return response.SuccessResponse(c, http.StatusOK, res)
 }
+
+func (h *httpHandler) DeclineInvite(c echo.Context) error {
+	ctx := c.Request().Context()
+	wrapper := request.ContextWrapper(c)
+
+	req := new(dto.DeclineInviteReq)
+	if err := wrapper.Bind(req); err != nil {
+		return response.ErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("error - [DeclineInvite] bad request: %v", err), "")
+	}
+
+	res, err := h.d.Service.DeclineInvite(ctx, *req)
+	if err != nil {
+		return response.ErrorResponse(c, http.StatusInternalServerError, fmt.Sprintf("error - [DeclineInvite] internal server error: %v", err), "")
+	}
+
+	return response.SuccessResponse(c, http.StatusOK, res)
+}

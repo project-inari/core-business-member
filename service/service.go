@@ -12,6 +12,7 @@ import (
 type Port interface {
 	Invite(ctx context.Context, req dto.InviteReq) (*dto.InviteRes, error)
 	AcceptInvite(ctx context.Context, req dto.AcceptInviteReq) (*dto.AcceptInviteRes, error)
+	DeclineInvite(ctx context.Context, req dto.DeclineInviteReq) (*dto.DeclineInviteRes, error)
 }
 
 type service struct {

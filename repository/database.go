@@ -10,6 +10,7 @@ import (
 const (
 	statusInvitePending  = "INVITE_PENDING"
 	statusInviteAccepted = "INVITE_ACCEPTED"
+	statusInviteDeclined = "INVITE_DECLINED"
 	roleMember           = "MEMBER"
 )
 
@@ -80,4 +81,14 @@ func (r *databaseRepository) GetBusiness(ctx context.Context, businessName strin
 	}
 
 	return &entity, nil
+}
+
+// DeclineBusinessInvitation declines a business invitation
+func (r *databaseRepository) DeclineBusinessInvitation(ctx context.Context, inviteeUsername, businessName string) error {
+	_, err := r.client.ExecContext(ctx, "UPDATE tbl_business_joinings SET status = ? WHERE business_name = ? AND username = ? AND status = ?", statusInviteDeclined, businessName, inviteeUsername, statusInvitePending)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -28,6 +28,10 @@ func (m *mockDatabaseRepository) GetBusiness(_ context.Context, _ string) (*dto.
 	return m.getBusinessRes, m.err
 }
 
+func (m *mockDatabaseRepository) DeclineBusinessInvitation(_ context.Context, _, _ string) error {
+	return m.err
+}
+
 type mockCacheRepository struct {
 	getRes *redis.StringCmd
 	setRes *redis.StatusCmd

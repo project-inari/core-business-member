@@ -12,3 +12,10 @@ Content-Type: application/json
     "inviteeUsername": "user2",
     "businessName": "business1"
 }
+
+POST http://localhost:8080/v1/invite/decline
+Content-Type: application/json
+{
+    "inviteeUsername": "user2",
+    "businessName": "business1"
+}
