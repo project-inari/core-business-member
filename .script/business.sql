@@ -45,9 +45,9 @@ CREATE TABLE `business`.`tbl_business_joinings` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 INSERT INTO `business`.`tbl_businesses` (`id`, `name`, `industry_type`, `business_type`, `description`, `phone_no`, `operating_hours`, `address`, `business_image_url`, `created_at`, `updated_at`) VALUES
-(1, 'business1', 'industry1', 'type1', 'description1', '1234567890', 'hours1', 'address1', 'image1', '2021-07-01 00:00:00', '2021-07-01 00:00:00'),
-(2, 'business2', 'industry2', 'type2', 'description2', '1234567890', 'hours2', 'address2', 'image2', '2021-07-01 00:00:00', '2021-07-01 00:00:00'),
-(3, 'business3', 'industry3', 'type3', 'description3', '1234567890', 'hours3', 'address3', 'image3', '2021-07-01 00:00:00', '2021-07-01 00:00:00');
+(1, 'business1', 'industry1', 'type1', 'description1', '1234567890', '{"monday":{"open":true,"openTime":"09:00","closeTime":"17:00"},"tuesday":{"open":true,"openTime":"09:00","closeTime":"17:00"},"wednesday":{"open":true,"openTime":"09:00","closeTime":"17:00"},"thursday":{"open":true,"openTime":"09:00","closeTime":"17:00"},"friday":{"open":true,"openTime":"09:00","closeTime":"17:00"},"saturday":{"open":false},"sunday":{"open":false}}', 'address1', 'image1', '2021-07-01 00:00:00', '2021-07-01 00:00:00'),
+(2, 'business2', 'industry2', 'type2', 'description2', '1234567890', '{"monday":{"open":true,"openTime":"09:00","closeTime":"17:00"},"tuesday":{"open":true,"openTime":"09:00","closeTime":"17:00"},"wednesday":{"open":true,"openTime":"09:00","closeTime":"17:00"},"thursday":{"open":true,"openTime":"09:00","closeTime":"17:00"},"friday":{"open":true,"openTime":"09:00","closeTime":"17:00"},"saturday":{"open":false},"sunday":{"open":false}}', 'address2', 'image2', '2021-07-01 00:00:00', '2021-07-01 00:00:00'),
+(3, 'business3', 'industry3', 'type3', 'description3', '1234567890', '{"monday":{"open":true,"openTime":"09:00","closeTime":"17:00"},"tuesday":{"open":true,"openTime":"09:00","closeTime":"17:00"},"wednesday":{"open":true,"openTime":"09:00","closeTime":"17:00"},"thursday":{"open":true,"openTime":"09:00","closeTime":"17:00"},"friday":{"open":true,"openTime":"09:00","closeTime":"17:00"},"saturday":{"open":false},"sunday":{"open":false}}', 'address3', 'image3', '2021-07-01 00:00:00', '2021-07-01 00:00:00');
 
 INSERT INTO `business`.`tbl_business_members` (`id`, `business_name`, `username`, `role`, `created_at`, `updated_at`) VALUES
 (1, 'business1', 'user1', 'OWNER', '2021-07-01 00:00:00', '2021-07-01 00:00:00'),

@@ -11,6 +11,7 @@ import (
 // Port represents the service layer functions
 type Port interface {
 	Invite(ctx context.Context, req dto.InviteReq) (*dto.InviteRes, error)
+	AcceptInvite(ctx context.Context, req dto.AcceptInviteReq) (*dto.AcceptInviteRes, error)
 }
 
 type service struct {

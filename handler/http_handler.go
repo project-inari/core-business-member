@@ -36,3 +36,20 @@ func (h *httpHandler) Invite(c echo.Context) error {
 
 	return response.SuccessResponse(c, http.StatusOK, res)
 }
+
+func (h *httpHandler) AcceptInvite(c echo.Context) error {
+	ctx := c.Request().Context()
+	wrapper := request.ContextWrapper(c)
+
+	req := new(dto.AcceptInviteReq)
+	if err := wrapper.Bind(req); err != nil {
+		return response.ErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("error - [AcceptInvite] bad request: %v", err), "")
+	}
+
+	res, err := h.d.Service.AcceptInvite(ctx, *req)
+	if err != nil {
+		return response.ErrorResponse(c, http.StatusInternalServerError, fmt.Sprintf("error - [AcceptInvite] internal server error: %v", err), "")
+	}
+
+	return response.SuccessResponse(c, http.StatusOK, res)
+}

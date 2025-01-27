@@ -12,9 +12,7 @@ const (
 
 // Invite invites a user to join a business
 func (s *service) Invite(ctx context.Context, req dto.InviteReq) (*dto.InviteRes, error) {
-	_ = ctx
-
-	err := s.databaseRepository.InviteToJoinBusiness(req.InviterUsername, req.InviteeUsername, req.BusinessName, statusInvitePending)
+	err := s.databaseRepository.InviteToJoinBusiness(ctx, req.InviterUsername, req.InviteeUsername, req.BusinessName)
 	if err != nil {
 		return nil, err
 	}
