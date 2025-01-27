@@ -80,7 +80,9 @@ func New(c *config.Config) {
 		Client: mysqlDB.client,
 	})
 
-	cacheRepo := repository.NewCacheRepository(repository.CacheRepositoryConfig{}, repository.CacheRepositoryDependencies{
+	cacheRepo := repository.NewCacheRepository(repository.CacheRepositoryConfig{
+		KeyUserVerifiedAccount: c.RedisConfig.KeyUserVerifiedAccount,
+	}, repository.CacheRepositoryDependencies{
 		Client: redisClient.client,
 	})
 

@@ -1,0 +1,1 @@
+SET USER-VERIFIED-ACCOUNT:user2 "{\"username\": \"user2\",\"uid\": \"test1uid\",\"firstName\": \"testfirst\",\"lastName\": \"testlast\",\"phoneNo\": \"+66000000000\",\"email\": \"test2@example.com\"}" EX 6000

@@ -44,8 +44,8 @@ func (r *cacheRepository) Set(ctx context.Context, key string, value interface{}
 	return r.client.Set(ctx, key, marshalValue, ttl)
 }
 
-func (r *cacheRepository) UpdateUserCacheNewBusinessJoined(ctx context.Context, ownerUsername string, business dto.BusinessCacheModel) error {
-	key := fmt.Sprintf("%s:%s", r.keyUserVerifiedAccount, ownerUsername)
+func (r *cacheRepository) UpdateUserCacheNewBusinessJoined(ctx context.Context, username string, business dto.BusinessCacheModel) error {
+	key := fmt.Sprintf("%s:%s", r.keyUserVerifiedAccount, username)
 
 	remainingTTL, err := r.client.TTL(ctx, key).Result()
 	if err != nil {
