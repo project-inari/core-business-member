@@ -196,6 +196,24 @@ func TestAcceptInvite(t *testing.T) {
 
 		assert.Error(t, err)
 	})
+
+	t.Run("error - when no pending invitation found", func(t *testing.T) {
+		mockCacheRepository := &mockCacheRepository{}
+		mockDatabaseRepository := &mockDatabaseRepository{
+			getBusinessRes:              &dto.BusinessEntity{},
+			getBusinessJoiningStatusRes: []*dto.BusinessJoiningEntity{},
+			err:                         nil,
+		}
+
+		s := New(Dependencies{
+			DatabaseRepository: mockDatabaseRepository,
+			CacheRepository:    mockCacheRepository,
+		})
+
+		_, err := s.AcceptInvite(ctx, req)
+
+		assert.Error(t, err)
+	})
 }
 
 func TestDeclineInvite(t *testing.T) {
@@ -360,6 +378,61 @@ func TestMemberInquiry(t *testing.T) {
 		})
 
 		_, err := s.MemberInquiry(ctx, mockBusinessName)
+
+		assert.Error(t, err)
+	})
+}
+
+func TestGetUserJoinedBusinesses(t *testing.T) {
+	ctx := context.Background()
+
+	expectedRes := &dto.UserJoinedInquiryRes{
+		Username: mockInviteeUsername,
+		Businesses: []dto.BusinessModel{
+			{
+				ID:       1,
+				Name:     mockBusinessName,
+				UserRole: roleMember,
+			},
+		},
+	}
+
+	t.Run("success", func(t *testing.T) {
+		mockCacheRepository := &mockCacheRepository{}
+		mockDatabaseRepository := &mockDatabaseRepository{
+			getUserJoinedBusinessesRes: []*dto.UserBusinessesEntity{
+				{
+					ID:       1,
+					Name:     mockBusinessName,
+					UserRole: roleMember,
+				},
+			},
+			err: nil,
+		}
+
+		s := New(Dependencies{
+			DatabaseRepository: mockDatabaseRepository,
+			CacheRepository:    mockCacheRepository,
+		})
+
+		res, err := s.UserJoinedInquiry(ctx, mockInviteeUsername)
+
+		assert.NoError(t, err)
+		assert.Equal(t, expectedRes, res)
+	})
+
+	t.Run("error - when database repo returned error", func(t *testing.T) {
+		mockCacheRepository := &mockCacheRepository{}
+		mockDatabaseRepository := &mockDatabaseRepository{
+			err: errors.New("error"),
+		}
+
+		s := New(Dependencies{
+			DatabaseRepository: mockDatabaseRepository,
+			CacheRepository:    mockCacheRepository,
+		})
+
+		_, err := s.UserJoinedInquiry(ctx, mockInviteeUsername)
 
 		assert.Error(t, err)
 	})
