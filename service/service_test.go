@@ -304,3 +304,58 @@ func TestJoiningInquiry(t *testing.T) {
 		assert.Error(t, err)
 	})
 }
+
+func TestMemberInquiry(t *testing.T) {
+	ctx := context.Background()
+
+	expectedRes := &dto.MemberInquiryRes{
+		BusinessName: mockBusinessName,
+		Result: []dto.MemberInquiryResult{
+			{
+				ID:       1,
+				Username: mockInviteeUsername,
+				Role:     roleMember,
+			},
+		},
+	}
+
+	t.Run("success", func(t *testing.T) {
+		mockCacheRepository := &mockCacheRepository{}
+		mockDatabaseRepository := &mockDatabaseRepository{
+			getBusinessMembersRes: []*dto.BusinessMemberEntity{
+				{
+					ID:       1,
+					Username: mockInviteeUsername,
+					Role:     roleMember,
+				},
+			},
+			err: nil,
+		}
+
+		s := New(Dependencies{
+			DatabaseRepository: mockDatabaseRepository,
+			CacheRepository:    mockCacheRepository,
+		})
+
+		res, err := s.MemberInquiry(ctx, mockBusinessName)
+
+		assert.NoError(t, err)
+		assert.Equal(t, expectedRes, res)
+	})
+
+	t.Run("error - when database repo returned error", func(t *testing.T) {
+		mockCacheRepository := &mockCacheRepository{}
+		mockDatabaseRepository := &mockDatabaseRepository{
+			err: errors.New("error"),
+		}
+
+		s := New(Dependencies{
+			DatabaseRepository: mockDatabaseRepository,
+			CacheRepository:    mockCacheRepository,
+		})
+
+		_, err := s.MemberInquiry(ctx, mockBusinessName)
+
+		assert.Error(t, err)
+	})
+}
