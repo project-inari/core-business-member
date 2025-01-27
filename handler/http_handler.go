@@ -106,3 +106,19 @@ func (h *httpHandler) MemberInquiry(c echo.Context) error {
 
 	return response.SuccessResponse(c, http.StatusOK, res)
 }
+
+func (h *httpHandler) UserJoinedInquiry(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	username := c.Param("username")
+	if username == "" {
+		return response.ErrorResponse(c, http.StatusBadRequest, "error - [UserJoinedInquiry] username is required", "")
+	}
+
+	res, err := h.d.Service.UserJoinedInquiry(ctx, username)
+	if err != nil {
+		return response.ErrorResponse(c, http.StatusInternalServerError, fmt.Sprintf("error - [UserJoinedInquiry] internal server error: %v", err), "")
+	}
+
+	return response.SuccessResponse(c, http.StatusOK, res)
+}

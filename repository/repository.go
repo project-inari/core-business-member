@@ -17,11 +17,12 @@ type DatabaseRepository interface {
 	DeclineBusinessInvitation(ctx context.Context, inviteeUsername, businessName string) error
 	GetBusinessJoiningStatus(ctx context.Context, filter dto.BusinessJoiningQueryFilter) ([]*dto.BusinessJoiningEntity, error)
 	GetBusinessMembers(ctx context.Context, businessName string) ([]*dto.BusinessMemberEntity, error)
+	GetUserJoinedBusinesses(ctx context.Context, username string) ([]*dto.UserBusinessesEntity, error)
 }
 
 // CacheRepository represents the repository layer functions of cache repository
 type CacheRepository interface {
 	Get(ctx context.Context, key string) *redis.StringCmd
 	Set(ctx context.Context, key string, value interface{}, ttl time.Duration) *redis.StatusCmd
-	UpdateUserCacheNewBusinessJoined(ctx context.Context, username string, business dto.BusinessCacheModel) error
+	UpdateUserCacheNewBusinessJoined(ctx context.Context, username string, business dto.BusinessModel) error
 }

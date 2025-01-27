@@ -15,6 +15,7 @@ type mockDatabaseRepository struct {
 	getBusinessRes              *dto.BusinessEntity
 	getBusinessJoiningStatusRes []*dto.BusinessJoiningEntity
 	getBusinessMembersRes       []*dto.BusinessMemberEntity
+	getUserJoinedBusinessesRes  []*dto.UserBusinessesEntity
 	err                         error
 }
 
@@ -42,6 +43,10 @@ func (m *mockDatabaseRepository) GetBusinessMembers(_ context.Context, _ string)
 	return m.getBusinessMembersRes, m.err
 }
 
+func (m *mockDatabaseRepository) GetUserJoinedBusinesses(_ context.Context, _ string) ([]*dto.UserBusinessesEntity, error) {
+	return m.getUserJoinedBusinessesRes, m.err
+}
+
 type mockCacheRepository struct {
 	getRes *redis.StringCmd
 	setRes *redis.StatusCmd
@@ -56,7 +61,7 @@ func (m *mockCacheRepository) Set(_ context.Context, _ string, _ interface{}, _ 
 	return m.setRes
 }
 
-func (m *mockCacheRepository) UpdateUserCacheNewBusinessJoined(_ context.Context, _ string, _ dto.BusinessCacheModel) error {
+func (m *mockCacheRepository) UpdateUserCacheNewBusinessJoined(_ context.Context, _ string, _ dto.BusinessModel) error {
 	return m.err
 }
 

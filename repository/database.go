@@ -152,3 +152,24 @@ func (r *databaseRepository) GetBusinessMembers(ctx context.Context, businessNam
 
 	return entities, nil
 }
+
+// GetUserJoinedBusinesses retrieves the businesses that a user has joined
+func (r *databaseRepository) GetUserJoinedBusinesses(ctx context.Context, username string) ([]*dto.UserBusinessesEntity, error) {
+	rows, err := r.client.QueryContext(ctx, "SELECT b.id, b.name, b.industry_type, b.business_type, b.description, b.phone_no, b.operating_hours, b.address, b.business_image_url, b.created_at, b.updated_at, m.role FROM tbl_businesses b JOIN tbl_business_members m ON b.name = m.business_name WHERE m.username = ?", username)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close() // nolint: errcheck
+
+	var entities []*dto.UserBusinessesEntity
+	for rows.Next() {
+		var entity dto.UserBusinessesEntity
+		if err := rows.Scan(&entity.ID, &entity.Name, &entity.IndustryType, &entity.BusinessType, &entity.Description, &entity.PhoneNo, &entity.OperatingHours, &entity.Address, &entity.BusinessImageURL, &entity.CreatedAt, &entity.UpdatedAt, &entity.UserRole); err != nil {
+			return nil, err
+		}
+
+		entities = append(entities, &entity)
+	}
+
+	return entities, nil
+}
