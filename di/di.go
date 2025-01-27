@@ -86,8 +86,8 @@ func New(c *config.Config) {
 
 	// Service initialization
 	service := service.New(service.Dependencies{
-		DatabaseRepository:    databaseRepo,
-		CacheRepository:       cacheRepo,
+		DatabaseRepository: databaseRepo,
+		CacheRepository:    cacheRepo,
 	})
 
 	// Handler initialization

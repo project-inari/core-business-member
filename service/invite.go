@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/project-inari/core-business-member/dto"
 )
@@ -13,7 +12,7 @@ const (
 
 // Invite invites a user to join a business
 func (s *service) Invite(ctx context.Context, req dto.InviteReq) (*dto.InviteRes, error) {
-	fmt.Println(req)
+	_ = ctx
 
 	err := s.databaseRepository.InviteToJoinBusiness(req.InviterUsername, req.InviteeUsername, req.BusinessName, statusInvitePending)
 	if err != nil {
