@@ -15,6 +15,7 @@ type DatabaseRepository interface {
 	AcceptBusinessInvitation(ctx context.Context, inviteeUsername, businessName string) error
 	GetBusiness(ctx context.Context, businessName string) (*dto.BusinessEntity, error)
 	DeclineBusinessInvitation(ctx context.Context, inviteeUsername, businessName string) error
+	GetBusinessJoiningStatus(ctx context.Context, filter dto.BusinessJoiningQueryFilter) ([]*dto.BusinessJoiningEntity, error)
 }
 
 // CacheRepository represents the repository layer functions of cache repository

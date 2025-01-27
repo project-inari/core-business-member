@@ -70,3 +70,23 @@ func (h *httpHandler) DeclineInvite(c echo.Context) error {
 
 	return response.SuccessResponse(c, http.StatusOK, res)
 }
+
+func (h *httpHandler) JoiningInquiry(c echo.Context) error {
+	ctx := c.Request().Context()
+	username := c.QueryParam("username")
+	businessName := c.QueryParam("businessName")
+	status := c.QueryParam("status")
+
+	req := dto.JoiningInquiryReq{
+		Username:     username,
+		BusinessName: businessName,
+		Status:       status,
+	}
+
+	res, err := h.d.Service.JoiningInquiry(ctx, req)
+	if err != nil {
+		return response.ErrorResponse(c, http.StatusInternalServerError, fmt.Sprintf("error - [JoiningInquiry] internal server error: %v", err), "")
+	}
+
+	return response.SuccessResponse(c, http.StatusOK, res)
+}

@@ -92,3 +92,42 @@ func (r *databaseRepository) DeclineBusinessInvitation(ctx context.Context, invi
 
 	return nil
 }
+
+// GetBusinessJoiningStatus retrieves the business joining status with the given filter
+func (r *databaseRepository) GetBusinessJoiningStatus(ctx context.Context, filter dto.BusinessJoiningQueryFilter) ([]*dto.BusinessJoiningEntity, error) {
+	query := "SELECT id, business_name, username, status, actioned_by, created_at, updated_at FROM tbl_business_joinings WHERE 1=1"
+	args := []interface{}{}
+
+	if filter.BusinessName != "" {
+		query += " AND business_name = ?"
+		args = append(args, filter.BusinessName)
+	}
+	if filter.Username != "" {
+		query += " AND username = ?"
+		args = append(args, filter.Username)
+	}
+	if filter.Status != "" {
+		query += " AND status = ?"
+		args = append(args, filter.Status)
+	}
+
+	query += " ORDER BY created_at DESC"
+
+	rows, err := r.client.QueryContext(ctx, query, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close() // nolint: errcheck
+
+	var entities []*dto.BusinessJoiningEntity
+	for rows.Next() {
+		var entity dto.BusinessJoiningEntity
+		if err := rows.Scan(&entity.ID, &entity.BusinessName, &entity.Username, &entity.Status, &entity.ActionedBy, &entity.CreatedAt, &entity.UpdatedAt); err != nil {
+			return nil, err
+		}
+
+		entities = append(entities, &entity)
+	}
+
+	return entities, nil
+}

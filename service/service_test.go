@@ -12,8 +12,9 @@ import (
 )
 
 type mockDatabaseRepository struct {
-	getBusinessRes *dto.BusinessEntity
-	err            error
+	getBusinessRes              *dto.BusinessEntity
+	getBusinessJoiningStatusRes []*dto.BusinessJoiningEntity
+	err                         error
 }
 
 func (m *mockDatabaseRepository) InviteToJoinBusiness(_ context.Context, _, _, _ string) error {
@@ -30,6 +31,10 @@ func (m *mockDatabaseRepository) GetBusiness(_ context.Context, _ string) (*dto.
 
 func (m *mockDatabaseRepository) DeclineBusinessInvitation(_ context.Context, _, _ string) error {
 	return m.err
+}
+
+func (m *mockDatabaseRepository) GetBusinessJoiningStatus(_ context.Context, _ dto.BusinessJoiningQueryFilter) ([]*dto.BusinessJoiningEntity, error) {
+	return m.getBusinessJoiningStatusRes, m.err
 }
 
 type mockCacheRepository struct {
@@ -218,6 +223,70 @@ func TestDeclineInvite(t *testing.T) {
 		})
 
 		_, err := s.DeclineInvite(ctx, req)
+
+		assert.Error(t, err)
+	})
+}
+
+func TestJoiningInquiry(t *testing.T) {
+	ctx := context.Background()
+
+	req := dto.JoiningInquiryReq{
+		Username:     mockInviteeUsername,
+		BusinessName: mockBusinessName,
+		Status:       statusInvitePending,
+	}
+
+	expectedRes := &dto.JoiningInquiryRes{
+		Result: []dto.JoiningInquiryResult{
+			{
+				ID:           1,
+				Username:     mockInviteeUsername,
+				BusinessName: mockBusinessName,
+				Status:       statusInvitePending,
+				ActionedBy:   mockInviterUsername,
+			},
+		},
+	}
+
+	t.Run("success", func(t *testing.T) {
+		mockCacheRepository := &mockCacheRepository{}
+		mockDatabaseRepository := &mockDatabaseRepository{
+			getBusinessJoiningStatusRes: []*dto.BusinessJoiningEntity{
+				{
+					ID:           1,
+					Username:     mockInviteeUsername,
+					BusinessName: mockBusinessName,
+					Status:       statusInvitePending,
+					ActionedBy:   mockInviterUsername,
+				},
+			},
+			err: nil,
+		}
+
+		s := New(Dependencies{
+			DatabaseRepository: mockDatabaseRepository,
+			CacheRepository:    mockCacheRepository,
+		})
+
+		res, err := s.JoiningInquiry(ctx, req)
+
+		assert.NoError(t, err)
+		assert.Equal(t, expectedRes, res)
+	})
+
+	t.Run("error - when database repo returned error", func(t *testing.T) {
+		mockCacheRepository := &mockCacheRepository{}
+		mockDatabaseRepository := &mockDatabaseRepository{
+			err: errors.New("error"),
+		}
+
+		s := New(Dependencies{
+			DatabaseRepository: mockDatabaseRepository,
+			CacheRepository:    mockCacheRepository,
+		})
+
+		_, err := s.JoiningInquiry(ctx, req)
 
 		assert.Error(t, err)
 	})

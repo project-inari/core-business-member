@@ -35,3 +35,10 @@ type BusinessJoiningEntity struct {
 	CreatedAt    string `sql:"created_at"`
 	UpdatedAt    string `sql:"updated_at"`
 }
+
+// BusinessJoiningQueryFilter represents the query filter for business joining
+type BusinessJoiningQueryFilter struct {
+	BusinessName string `sql:"business_name"`
+	Username     string `sql:"username"`
+	Status       string `sql:"status"`
+}
