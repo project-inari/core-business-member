@@ -1,11 +1,7 @@
-GET http://localhost:8080/v1/example
+POST http://localhost:8080/v1/invite
 Content-Type: application/json
-
-GET http://localhost:8080/v1/test
-Content-Type: application/json
-
-GET http://localhost:8080/v1/db
-Content-Type: application/json
-
-GET http://localhost:8080/v1/cache
-Content-Type: application/json
+{
+    "inviterUsername": "user1",
+    "inviteeUsername": "user2",
+    "businessName": "business1"
+}

@@ -18,6 +18,7 @@ type redisOptions struct {
 	timeout  time.Duration
 	maxRetry int
 	poolSize int
+	db       int
 }
 
 func newRedis(opts redisOptions) (*redisClient, error) {
@@ -27,6 +28,7 @@ func newRedis(opts redisOptions) (*redisClient, error) {
 		ReadTimeout: opts.timeout,
 		MaxRetries:  opts.maxRetry,
 		PoolSize:    opts.poolSize,
+		DB:          opts.db,
 	})
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
