@@ -90,3 +90,19 @@ func (h *httpHandler) JoiningInquiry(c echo.Context) error {
 
 	return response.SuccessResponse(c, http.StatusOK, res)
 }
+
+func (h *httpHandler) MemberInquiry(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	businessName := c.Param("businessName")
+	if businessName == "" {
+		return response.ErrorResponse(c, http.StatusBadRequest, "error - [MemberInquiry] business name is required", "")
+	}
+
+	res, err := h.d.Service.MemberInquiry(ctx, businessName)
+	if err != nil {
+		return response.ErrorResponse(c, http.StatusInternalServerError, fmt.Sprintf("error - [MemberInquiry] internal server error: %v", err), "")
+	}
+
+	return response.SuccessResponse(c, http.StatusOK, res)
+}
