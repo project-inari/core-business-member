@@ -26,3 +26,5 @@ GET http://localhost:8080/v1/joining
     &status=INVITE_ACCEPTED
 
 GET http://localhost:8080/v1/members/business1
+
+GET http://localhost:8080/v1/joined/user1

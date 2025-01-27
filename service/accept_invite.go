@@ -48,8 +48,8 @@ func (s *service) AcceptInvite(ctx context.Context, req dto.AcceptInviteReq) (*d
 	}, nil
 }
 
-func constructBusinessCacheModel(business dto.BusinessEntity) *dto.BusinessCacheModel {
-	return &dto.BusinessCacheModel{
+func constructBusinessCacheModel(business dto.BusinessEntity) *dto.BusinessModel {
+	return &dto.BusinessModel{
 		ID:               business.ID,
 		Name:             business.Name,
 		IndustryType:     business.IndustryType,
